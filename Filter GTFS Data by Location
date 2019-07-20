@@ -1,0 +1,52 @@
+
+# stops.txt > stop_id > transfers.txt
+# stops.txt > stop_id > stop_times.txt > trip_id > trip.txt > route_id > route.txt > agency_id > agency.txt
+# trip.txt > service_id > calendar.txt & calendar_dates.txt
+
+# 0 load package & data
+import pandas as pd
+
+stops = pd.read_csv('stops.txt', sep=",")
+transfers = pd.read_csv('transfers.txt', sep=",")
+stop_times = pd.read_csv('stop_times.txt', sep=",")
+trips = pd.read_csv('trips.txt', sep=",")
+routes = pd.read_csv('routes.txt', sep=",")
+agency = pd.read_csv('agency.txt', sep=",")
+calendar = pd.read_csv('calendar.txt', sep=",")
+calendar_dates = pd.read_csv('calendar_dates.txt', sep=",")
+
+# 1 stops.txt
+stops = stops[(stops.stop_lat > ) & (stops.stop_lat < )
+              & (stops.stop_lon > ) & (stops.stop_lon < )]
+stops.to_csv('results/stops.txt', index=False, sep=',')
+stopid = list(stops['stop_id'])
+
+# 2 transfers.txt
+transfers = transfers[transfers['stop_id'].isin(stopid)]
+transfers.to_csv('results/transfers.txt', index=False, sep=',')
+
+# 3 stop_times.txt
+stop_times = stop_times[stop_times['stop_id'].isin(stopid)]
+stop_times.to_csv('results/stop_times.txt', index=False, sep=',')
+tripid = list(stop_times['trip_id'].unique())
+
+# 4 trips.txt
+trips = trips[trips['trip_id'].isin(tripid)]
+trips.to_csv('results/trips.txt', index=False, sep=',')
+routeid = list(trips['route_id'].unique())
+serviceid = list(trips['service_id'].unique())
+
+# 5 routes.txt
+routes = routes[routes['route_id'].isin(routeid)]
+routes.to_csv('results/route.txt', index=False, sep=',')
+agencyid = list(routes['agency_id'].unique())
+
+# 6 agency.txt
+agency = agency[agency['agency_id'].isin(agencyid)]
+agency.to_csv('results/agency.txt', index=False, sep=',')
+
+# 7 calendar.txt & calendar_dates.txt
+calendar = calendar[calendar['service_id'].isin(serviceid)]
+calendar_dates = calendar_dates[calendar_dates['service_id'].isin(serviceid)]
+calendar.to_csv('results/calendar.txt', index=False, sep=',')
+calendar_dates.to_csv('results/calendar_dates.txt', index=False, sep=',')
